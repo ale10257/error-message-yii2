@@ -1,0 +1,16 @@
+{
+    "name": "ale10257/error-message-yii2",
+    "description": "Yii2 component for sending error messages via pluggable messenger (Telegram, email, etc.)",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "ale10257\\sendError\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "vlucas/phpdotenv": "^5.0",
+        "yiisoft/yii2": "~2.0"
+    }
+}
