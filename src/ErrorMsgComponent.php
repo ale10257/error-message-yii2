@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ale10257\sendError;
 
+use Yii;
 use yii\base\Component;
 use yii\web\NotFoundHttpException;
 
@@ -11,7 +12,17 @@ class ErrorMsgComponent extends Component
 {
     use ErrorMessageFormatterTrait;
 
-    public IErrorBot $client;
+    public IErrorBot|array $client;
+
+    public function init()
+    {
+        parent::init();
+
+        // Превращаем массив конфигурации в объект
+        if (is_array($this->client)) {
+            $this->client = Yii::createObject($this->client);
+        }
+    }
 
     /**
      * Соответствие класс исключения → HTTP-код. Задаётся в конфиге приложения.
