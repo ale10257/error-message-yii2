@@ -11,6 +11,7 @@
     "require": {
         "php": ">=7.4",
         "vlucas/phpdotenv": "^5.0",
-        "yiisoft/yii2": "~2.0"
+        "yiisoft/yii2": "~2.0",
+        "yiisoft/yii2-queue": "^2.3"
     }
 }

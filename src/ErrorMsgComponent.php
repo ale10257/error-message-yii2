@@ -6,13 +6,22 @@ namespace ale10257\sendError;
 
 use Yii;
 use yii\base\Component;
+use yii\di\NotInstantiableException;
 use yii\web\NotFoundHttpException;
 
 class ErrorMsgComponent extends Component
 {
     use ErrorMessageFormatterTrait;
 
-    public IErrorBot|array $client;
+    /** @var IErrorBot|array */
+    public $client;
+    public ?string $pathTo504 = null;
+    public bool $useQueue = true;
+    public string $queueComponentId = 'queue';
+    public bool $enableBotError = true;
+    public bool $enableEmailError = true;
+    /** @var string[] */
+    public array $emailRecipients = [];
 
     public function init()
     {
@@ -34,7 +43,30 @@ class ErrorMsgComponent extends Component
 
     public function send(string $msg): void
     {
-        $this->client->sendErrorMsg($msg);
+        if (!$this->enableBotError && !$this->enableEmailError) {
+            return;
+        }
+
+        if ($this->useQueue && $this->canPushToQueue()) {
+            try {
+                /** @var mixed $queue */
+                $queue = Yii::$app->get($this->queueComponentId);
+                $queue->push(new SendErrorMessageJob([
+                    'message' => $msg,
+                ]));
+
+                return;
+            } catch (\Throwable $e) {
+                Yii::error('Failed to enqueue error message: ' . $e->getMessage(), 'sendErrorMessage');
+                return;
+            }
+        }
+
+        try {
+            $this->client->sendErrorMsg($msg);
+        } catch (\Throwable $e) {
+            Yii::error('Failed to send error message: ' . $e->getMessage(), 'sendErrorMessage');
+        }
     }
 
     /**
@@ -47,5 +79,25 @@ class ErrorMsgComponent extends Component
         }
         $context = $this->getRequestContext();
         $this->send($this->formatErrorMessage($e, $context));
+    }
+
+    private function canPushToQueue(): bool
+    {
+        if (!Yii::$app->has($this->queueComponentId)) {
+            return false;
+        }
+
+        try {
+            /** @var mixed $queue */
+            $queue = Yii::$app->get($this->queueComponentId);
+        } catch (NotInstantiableException $e) {
+            Yii::error('Queue component is not instantiable: ' . $e->getMessage(), 'sendErrorMessage');
+            return false;
+        } catch (\Throwable $e) {
+            Yii::error('Failed to resolve queue component: ' . $e->getMessage(), 'sendErrorMessage');
+            return false;
+        }
+
+        return method_exists($queue, 'push');
     }
 }
