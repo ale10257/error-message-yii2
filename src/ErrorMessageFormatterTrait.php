@@ -29,9 +29,9 @@ trait ErrorMessageFormatterTrait
      */
     protected function shouldSendError(\Throwable $e): bool
     {
-//        if (defined('YII_ENV') && YII_ENV === 'dev') {
-//            return false;
-//        }
+        if (defined('YII_ENV') && YII_ENV === 'dev') {
+            return false;
+        }
 
         $code = $this->getErrorCode($e);
         $excludedCodes = array_values(Yii::$app->sendErrorMessage->errorCodeMap);

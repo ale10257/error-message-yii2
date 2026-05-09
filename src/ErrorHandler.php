@@ -12,10 +12,10 @@ class ErrorHandler extends \yii\web\ErrorHandler
 
     public function handleException($exception): void
     {
-//        if (defined('YII_ENV') && YII_ENV === 'dev') {
-//            parent::handleException($exception);
-//            return;
-//        }
+        if (defined('YII_ENV') && YII_ENV === 'dev') {
+            parent::handleException($exception);
+            return;
+        }
         try {
             if ($this->shouldSendError($exception)) {
                 $context = $this->getRequestContext();
