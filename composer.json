@@ -13,6 +13,6 @@
         "vlucas/phpdotenv": "^5.0",
         "yiisoft/yii2": "~2.0",
         "yiisoft/yii2-queue": "^2.3",
-        "yiisoft/yii2-symfonymailer": "^4.0"
+        "yiisoft/yii2-symfonymailer": "^3.0 || ^4.0"
     }
 }
