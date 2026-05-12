@@ -12,7 +12,7 @@ class ErrorMsgComponent extends Component
 {
     use ErrorMessageFormatterTrait;
 
-    /** @var IErrorBot|array */
+    /** @var IErrorBot Конфиг может быть массивом с ключом `class`; после {@see init()} всегда экземпляр. */
     public $client;
     public ?string $pathTo504 = null;
     public string $queueComponentId = 'queue';
@@ -28,6 +28,12 @@ class ErrorMsgComponent extends Component
     public array $errorCodeMap = [
         NotFoundHttpException::class => 404,
     ];
+
+    public function init(): void
+    {
+        parent::init();
+        $this->client = Yii::createObject($this->client);
+    }
 
     public function send(string $msg): void
     {
