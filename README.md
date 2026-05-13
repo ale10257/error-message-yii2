@@ -41,7 +41,6 @@ composer require ale10257/error-message-yii2
             'apiKey'   => $_ENV['YOUR_MESSENGER_API_KEY'],
             'chatId'   => $_ENV['YOUR_MESSENGER_CHAT_ID'],
         ],
-        'useQueue' => true,
         'errorCodeMap' => [
             \yii\web\NotFoundHttpException::class => 404,
             \yii\web\ForbiddenHttpException::class => 403,
@@ -90,6 +89,15 @@ SMTP_USERNAME=robot@example.com
         'class' => \ale10257\sendError\ErrorHandler::class,
     ],
     // ...
+],
+```
+```php
+// config/console.php
+'components' => [
+'errorHandler' => [
+'class' => \ale10257\sendError\ErrorHandlerConsole::class,
+],
+// ...
 ],
 ```
 

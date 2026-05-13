@@ -11,10 +11,10 @@ use yii\queue\JobInterface;
 class SendEmailErrorMessageJob extends BaseObject implements JobInterface
 {
     public string $message = '';
-    private const EMAIL_SUBJECT = 'Application Market Error Alert';
 
     public function execute($queue): void
     {
+        $subject = 'Application ' . Yii::$app->name . ' Error Alert';
         try {
             $from = $_ENV['SMTP_USERNAME'];
             $to = Yii::$app->sendErrorMessage->emailRecipients;
@@ -23,7 +23,7 @@ class SendEmailErrorMessageJob extends BaseObject implements JobInterface
                 ->compose()
                 ->setFrom($from)
                 ->setTo($to)
-                ->setSubject(self::EMAIL_SUBJECT)
+                ->setSubject($subject)
                 ->setTextBody($this->message)
                 ->send();
         } catch (\Throwable $e) {

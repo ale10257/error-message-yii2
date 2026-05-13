@@ -15,6 +15,6 @@ class SendBotErrorMessageJob extends BaseObject implements JobInterface
     public function execute($queue): void
     {
         $client = Yii::$app->sendErrorMessage->client;
-        $client->sendErrorMsg($this->message);
+        $client->sendErrorMsg(Yii::$app->name . "\n" . $this->message);
     }
 }
